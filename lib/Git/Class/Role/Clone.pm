@@ -17,8 +17,14 @@ sub clone {
     $dir = uri_unescape($1);
   }
 
-  Git::Raw::Repository->clone( $url, $dir, {} );
+  my $error;
+  eval {
+    Git::Raw::Repository->clone( $url, $dir, {} );
+  } or do {
+    $error = $@;
+  };
 
+  $self->_error($error->message) if defined $error;
   $self->_error("work directory is not found") unless -d $dir;
 
   Git::Class::Worktree->new( path => $dir, cmd => $self );
