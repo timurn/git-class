@@ -14,6 +14,10 @@ has '_git' => (
   builder   => '_find_git',
 );
 
+has 'message' => (
+  is => 'rw',
+);
+
 # predicate doesn't work in this case
 sub is_available { shift->_git ? 1 : 0 }
 

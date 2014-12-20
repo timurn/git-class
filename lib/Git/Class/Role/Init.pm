@@ -1,14 +1,28 @@
 package Git::Class::Role::Init;
 
 use Moo::Role; with 'Git::Class::Role::Execute';
-requires 'git';
+use Git::Raw;
+use Cwd;
 
 sub init {
-  my $self = shift;
+    my $self   = shift;
+    my $params = shift;
 
-  # my ($options, @args) = $self->_get_options(@_);
+    my $repo;
 
-  $self->git( init => @_ );
+    eval { 
+        $repo = Git::Raw::Repository->init( $params->{directory} || getcwd(), 
+                                            $params->{bare} ? 1 : 0 ); 
+    };
+
+    if ( $@ ) {
+        $self->message( $@->message );
+        return;
+    }
+
+    $self->message( "Success" );
+
+    return $repo;
 }
 
 1;
