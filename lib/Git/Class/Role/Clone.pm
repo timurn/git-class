@@ -1,9 +1,6 @@
 package Git::Class::Role::Clone;
 
 use Moo::Role; with 'Git::Class::Role::Execute';
-requires 'git';
-
-use Git::Class::Worktree;
 use URI::Escape;
 
 sub clone {
