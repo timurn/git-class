@@ -1,15 +1,11 @@
 use strict;
 use warnings;
 use Test::More;
-use Git::Class::Cmd;
 use Git::Class::Worktree;
 use Path::Tiny qw/path cwd tempdir/;
 
 my $cwd; BEGIN { $cwd = cwd; }
 my $dir = tempdir(CLEANUP => 1);
-
-my $cmd = Git::Class::Cmd->new(verbose => 1);
-plan skip_all => 'git is not available' unless $cmd->is_available;
 
 local $ENV{GIT_CLASS_TRACE} = 1;
 
@@ -17,7 +13,7 @@ my $tree;
 
 subtest 'chdir' => sub {
   is $cwd => cwd(), 'we are in the current directory';
-  $tree = Git::Class::Worktree->new( path => $dir->absolute ); 
+  $tree = Git::Class::Worktree->new( path => $dir->absolute );
 
   ok cwd() ne $cwd, 'current directory has changed properly';
 
