@@ -88,11 +88,11 @@ subtest 'clone' => sub {
 
   use Git::Class::Cmd;
   my $git = Git::Class::Cmd->new;
-  my $worktree = $git->clone('git://github.com/charsbar/git-class.git');
+  my $worktree = $git->clone('git://github.com/libgit2/TestGitRepository.git');
 
   my @changes;
   eval {
-    @changes = file( '/tmp/git-class', 'Changes' )->slurp( chomp => 1 );
+    @changes = file( '/tmp/TestGitRepository', 'master.txt' )->slurp( chomp => 1 );
   };
 
   ok scalar @changes;
