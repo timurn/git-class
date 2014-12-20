@@ -11,13 +11,14 @@ sub clone {
 
   my ($options, @args) = $self->_get_options(@_);
 
-  my ($out) = $self->git( clone => $options, @args );
-  Carp::croak $self->_error if $self->_error;
-
-  my $dir = $args[-1];
-  if ($dir =~ m{([^/]+)/?\.git/?$}i) {
+  my $url = $args[-1];
+  my $dir;
+  if ($url =~ m{([^/]+)/?\.git/?$}i) {
     $dir = uri_unescape($1);
   }
+
+  Git::Raw::Repository->clone( $url, $dir, {} );
+
   $self->_error("work directory is not found") unless -d $dir;
 
   Git::Class::Worktree->new( path => $dir, cmd => $self );

@@ -3,6 +3,7 @@ use warnings;
 use Test::More;
 use Git::Class::Worktree;
 use Path::Tiny qw/path cwd tempdir/;
+use Path::Class;
 
 my $cwd; BEGIN { $cwd = cwd; }
 my $dir = tempdir(CLEANUP => 1);
@@ -81,6 +82,22 @@ subtest 'demolish' => sub {
 
   ok $cwd eq cwd(), 'restored previous current directory after demolishing';
 };
+
+subtest 'clone' => sub {
+  chdir '/tmp';
+
+  use Git::Class::Cmd;
+  my $git = Git::Class::Cmd->new;
+  my $worktree = $git->clone('git://github.com/charsbar/git-class.git');
+
+  my @changes;
+  eval {
+    @changes = file( '/tmp/git-class', 'Changes' )->slurp( chomp => 1 );
+  };
+
+  ok scalar @changes;
+};
+
 
 done_testing;
 
