@@ -28,7 +28,7 @@ has '_cmd' => (
   builder    => '_build__cmd',
   handles    => [qw(
     git
-    add branch checkout commit config diff fetch init log move 
+    add branch checkout commit config diff fetch init log move
     push pull rebase reset remove show status tag
   )],
 );

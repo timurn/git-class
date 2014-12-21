@@ -1,14 +1,40 @@
 package Git::Class::Role::Diff;
 
 use Moo::Role; with 'Git::Class::Role::Execute';
-requires 'git';
+use Git::Raw;
 
 sub diff {
   my $self = shift;
 
-  # my ($options, @args) = $self->_get_options(@_);
+  my $path = Path::Tiny->cwd->absolute;
+  my $repo = Git::Raw::Repository->open( $path );
 
-  $self->git( diff => @_ );
+  my $status = $repo->status({});
+
+  my @modified_files =
+    grep { 'worktree_modified' ~~ $status->{$_}->{flags} }
+    keys %$status;
+
+  my $index = $repo->index;
+  my $tree  = $repo->head->target->tree;
+
+  $index->add($_) for @modified_files;
+
+  my $out;
+  my $printer = sub {
+    my ($usage, $line) = @_;
+    $out .= $line;
+  };
+
+  my $diff = $repo->diff({
+    'tree'            => $tree,
+    'context_lines'   => 3,
+    'interhunk_lines' => 0,
+  });
+
+  $diff->print("patch", $printer);
+
+  return $out;
 }
 
 1;
