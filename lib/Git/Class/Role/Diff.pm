@@ -18,6 +18,8 @@ sub diff {
   my $index = $repo->index;
   my $tree  = $repo->head->target->tree;
 
+  # TODO rm from index non modified files
+
   $index->add($_) for @modified_files;
 
   my $out;
